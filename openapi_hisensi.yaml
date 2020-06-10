@@ -1,0 +1,527 @@
+openapi: 3.0.1
+info:
+  title: Hisensi API
+  description: > 
+    Elenco delle API utiizzate dal progetto HISENSI
+    
+    ---
+    
+  version: v1
+
+servers:
+  - url: 'https://rest.patch.hisensi.com/'
+    description: "Ambiente di PRODUZIONE"
+  - url: 'http://localhost/~alessiofavilli/hisensi-api-rest'
+    description: "Ambiente LOCALE"
+
+
+
+paths:
+  /index.php/users/recuperaInfoPaziente/{user_id}:
+    get:
+      tags:
+        - Paziente
+      summary: Recupera Info Paziente
+      description: Recupera informazioni relative al paziente
+      operationId: recuperaInfoPaziente
+      
+      parameters:
+      - name: user_id
+        in: path
+        required: true
+        description: ID Paziente
+        schema:
+          type : string
+          example: ClaudioUUID
+      
+      responses:
+        '200':
+          description: Info paziente recuperate correttamente
+          content:
+            application/json:
+              schema: 
+                items:
+                  $ref: '#/components/schemas/RecuperaInfoPaziente'
+  
+                
+  
+  /index.php/users/loginMedico/{username}/{password}:
+    get:
+      tags:
+        - Login
+      summary: Login Medico
+      description: Effettua il login di un medico tramite web app
+      operationId: loginMedico
+      
+      parameters:
+      - name: username
+        in: path
+        required: true
+        description: User ID
+        schema:
+          type : string
+          example: 'FVLLSS80P08E625Y'
+      
+      - name: password
+        in: path
+        required: true
+        description: Password
+        schema:
+          type : string
+          example: 'password'
+      
+      responses:
+        '200':
+          description: Login paziente effettuato correttamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/LoginMedicoInfo'
+  
+  
+  
+  /index.php/users/recuperaPazienti/{id}:
+    get:
+      tags:
+        - Paziente
+      summary: Recupera Pazienti Medico
+      description: Recupera l'elenco dei pazienti associati a un medico
+      operationId: recuperaPazienti
+      
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID Medico
+        schema:
+          type : integer
+          example: 1
+      
+      
+      responses:
+        '200':
+          description: Pazienti recuperati correttamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RecuperaPazientiInfo'
+  
+  
+  
+  /index.php/users/recuperaPazientiBasicAuth/{id}:
+    get:
+      tags:
+        - Paziente
+      summary: Recupera Pazienti Medico
+      description: Recupera l'elenco dei pazienti associati a un medico
+      operationId: recuperaPazientiBasicAuth
+      
+      security: 
+      - BasicAuth: []   # username: Alessio55 - Password: password
+
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID Medico
+        schema:
+          type : integer
+          example: 1
+      
+      
+      responses:
+        '200':
+          description: Pazienti recuperati correttamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RecuperaPazientiInfo'
+  
+  
+  
+  /index.php/users/recuperaPazientiApiKey/{id}:
+    get:
+      tags:
+        - Paziente
+      summary: Recupera Pazienti Medico
+      description: Recupera l'elenco dei pazienti associati a un medico
+      operationId: recuperaPazientiApiKey
+      
+      security: 
+      - ApiKeyAuth: [039221c87c054f5dec827f90a7a4c254]
+
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID Medico
+        schema:
+          type : integer
+          example: 1
+      
+      
+      responses:
+        '200':
+          description: Pazienti recuperati correttamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RecuperaPazientiInfo'
+  
+  
+  
+  /index.php/users/recuperaPazientiOauth2/{id}:
+    get:
+      tags:
+        - Paziente
+      summary: Recupera Pazienti Medico
+      description: Recupera l'elenco dei pazienti associati a un medico
+      operationId: recuperaPazientiOauth2
+      
+      security: 
+      - OAuth2: 
+        - read
+        - write
+
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID Medico
+        schema:
+          type : integer
+          example: 1
+      
+      
+      responses:
+        '200':
+          description: Pazienti recuperati correttamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RecuperaPazientiInfo'
+  
+  
+          
+  /index.php/users/loginPaziente:
+    post:
+      tags:
+        - Login
+      summary: Login paziente
+      description: Effettua il login di un paziente tramite mobile app
+      operationId: loginPaziente
+      
+      requestBody:
+        description: Credenziali Paziente.
+        content:
+          application/json:
+            schema:
+              required: 
+                - login
+              properties:
+                login:
+                  type: object
+                  example: {'username' : 'F', 'password' : 'p'}
+                  
+        required: true
+      
+      responses:
+        '200':
+          description: Login paziente effettuato correttamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/LoginPazienteInfo'
+          
+       
+          
+  /index.php/users/stopRilevazione:
+    post:
+      tags:
+        - Sessione
+      summary: Salva rilevazione sessione
+      description: Salva su MySQL le info relative alla sessione
+      operationId: stopRilevazione
+      
+      requestBody:
+        description: Dati rilevazione.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rilevazione'
+        required: true
+      responses:
+        '201':
+          description: Rilevazione sessione salvata correttamente.
+          content: {}
+      x-codegen-request-body-name: Rilevazione
+      
+
+
+  /index.php/users/salvaEventoLive:
+    post:
+      tags:
+        - Sessione
+      summary: Momorizza l'evento LIVE
+      description: Salva su DB la presenza di una sessione LIVE
+      operationId: salvaEventoLive
+      
+      requestBody:
+        description: Info sessione - evento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventoLive'
+        required: true
+      
+      responses:
+        '200':
+          description: Evento LIVE salvato correttamente
+          content: {}
+      x-codegen-request-body-name: EventoLive
+
+      
+components: 
+
+  schemas:
+  
+    Rilevazione:
+      type: object
+      properties:
+        SessionId:
+          type: string
+        StartDate:
+          type: string
+        EndDate:
+          type: string
+        PacketCount:
+          type: integer
+        DeviceType:
+          type: string
+        DeviceFreq:
+          type: number
+          format: double
+        UserId:
+          type: string
+      required:
+          - SessionId
+          - StartDate
+          - EndDate
+          - PacketCount
+          - DeviceType
+          - DeviceFreq
+          - UserId
+          
+      example:
+        SessionId: "20191112120212435000"
+        StartDate: "2019-11-12 12:02:12.435000"
+        EndDate: "2019-11-12 12:02:12.450000"
+        PacketCount: 600
+        DeviceType: "SINSIM"
+        DeviceFreq: 100.00
+        UserId: "ClaudioUUID"
+          
+  
+  
+    EventoLive:
+      type: object
+      properties:
+        session_id:
+          type: string
+        event_id:
+          type: string
+
+    
+      example:
+        session_id: "20200313155332997000"
+        event_id: "fvllss80p08e625y"
+    
+    
+  
+    RecuperaPazientiInfo:
+      type: object
+      properties:
+        PazientiInfo:
+          $ref: '#/components/schemas/PazientiInfoArray'
+  
+    PazientiInfoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PazienteInfoDetail'
+      
+        
+    PazienteInfoDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        cognome:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        codice_fiscale:
+          type: string
+        medico_id:
+          type: string
+        user_id:
+          type: string
+
+      example:
+        id: "2"
+        nome: "MARIO"
+        cognome: "ROSSI"
+        username: "F"
+        password: "p"
+        codice_fiscale: "MSARNI65B47C413M"
+        medico_id: "1"
+        user_id: "ClaudioUUID"
+
+
+
+    LoginPazienteInfo:
+      type: object
+      properties:
+        PatientInfo:
+          $ref: '#/components/schemas/PatientInfo'
+        DoctorInfo:
+          $ref: '#/components/schemas/DoctorInfo'
+
+
+    PatientInfo:
+      type: object
+      properties:
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        FiscalCode:
+          type: string
+        UserId:
+          type: string
+    
+      example:
+        FirstName: "MARIO"
+        LastName: "ROSSI"
+        FiscalCode: "MSARNI65B47C413M"
+        UserId: "ClaudioUUID"
+        
+
+
+
+    DoctorInfo:
+      type: object
+      properties:
+        FirstName:
+          type: string
+        LastName:
+          type: string
+
+      example:
+        FirstName: "Alessio"
+        LastName: "Favilli"
+    
+    
+    
+    LoginMedicoInfo:
+      type: object
+      properties:
+        UserInfo:
+          $ref: '#/components/schemas/UserInfo'
+    
+    UserInfo:
+      type: object
+      properties:
+        Name:
+          type: string
+        UserName:
+          type: string
+        LastName:
+          type: string
+        FiscalCode:
+          type: string
+        Id:
+          type: string
+    
+      example:
+        Name: "Alessio"
+        UserName: "fvllss80p08e625y"
+        LastName: "Favilli"
+        FiscalCode: "fvllss80p08e625y"
+        Id: "1"
+    
+
+    RecuperaInfoPaziente:
+      type: object
+      properties:
+        Info:
+          $ref: '#/components/schemas/InfoPaziente'
+      
+    InfoPaziente:
+      type: object
+      properties:   
+        id:
+          type: string
+        nome:
+          type: string
+        cognome:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        codice_fiscale:
+          type: string
+        medico_id:
+          type: string
+        user_id:
+          type: string
+      
+      example:
+        id: "2"
+        nome: "MARIO"
+        cognome: "ROSSI"
+        username: "F"
+        password: "p"
+        codice_fiscale: "MSARNI65B47C413M"
+        medico_id: "1"
+        user_id: "ClaudioUUID"
+  
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+    
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    
+    OpenID:
+      type: openIdConnect
+      openIdConnectUrl: https://www.javaboss.it/.well-known/openid-configuration
+    
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://dev-eikcc9e5.auth0.com/authorize
+          tokenUrl: https://dev-eikcc9e5.auth0.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations
+
+    
+
+  
+        
